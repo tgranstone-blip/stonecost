@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#01696f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="StoneCost">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<title>StoneCost – Calculadora de Serraria</title>
+<style>
+:root,[data-theme="light"]{
+  --bg:#f7f6f2;--sur:#f9f8f5;--sur2:#fbfbf9;--suroff:#f0ede8;
+  --div:#dcd9d5;--bor:#d4d1ca;
+  --tx:#28251d;--txm:#7a7974;--txf:#bab9b4;
+  --pr:#01696f;--prh:#0c4e54;--pra:#0f3638;--prhl:#cedcd8;
+  --ok:#437a22;--wa:#964219;--wahl:#ddcfc6;
+  --sh1:0 1px 2px rgba(40,37,29,.06);--sh2:0 4px 12px rgba(40,37,29,.09);--sh3:0 12px 32px rgba(40,37,29,.14);
+  --tr:180ms cubic-bezier(.16,1,.3,1);
+  --r1:.375rem;--r2:.5rem;--r3:.75rem;--r4:1rem;--rf:9999px;
+}
+[data-theme="dark"]{
+  --bg:#171614;--sur:#1c1b19;--sur2:#201f1d;--suroff:#232220;
+  --div:#262523;--bor:#393836;
+  --tx:#cdccca;--txm:#797876;--txf:#5a5957;
+  --pr:#4f98a3;--prh:#227f8b;--pra:#1a626b;--prhl:#2a3535;
+  --ok:#6daa45;--wa:#bb653b;--wahl:#3d2e24;
+  --sh1:0 1px 2px rgba(0,0,0,.25);--sh2:0 4px 12px rgba(0,0,0,.35);--sh3:0 12px 32px rgba(0,0,0,.45);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme]){
+  --bg:#171614;--sur:#1c1b19;--sur2:#201f1d;--suroff:#232220;
+  --div:#262523;--bor:#393836;
+  --tx:#cdccca;--txm:#797876;--txf:#5a5957;
+  --pr:#4f98a3;--prh:#227f8b;--pra:#1a626b;--prhl:#2a3535;
+  --ok:#6daa45;--wa:#bb653b;--wahl:#3d2e24;
+  --sh1:0 1px 2px rgba(0,0,0,.25);--sh2:0 4px 12px rgba(0,0,0,.35);--sh3:0 12px 32px rgba(0,0,0,.45);
+}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;color:var(--tx);background:var(--bg);line-height:1.6;
+  min-height:100dvh;padding-bottom:env(safe-area-inset-bottom,0px);
+}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--pr);outline-offset:3px;border-radius:var(--r1)}
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:var(--sur);border-bottom:1px solid var(--bor);
+  padding:12px 20px;display:flex;align-items:center;justify-content:space-between;
+  box-shadow:var(--sh1);
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;background:var(--pr);border-radius:var(--r2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{color:#fff}
+.logo-name{font-size:15px;font-weight:700;letter-spacing:-.02em}
+.logo-sub{font-size:12px;color:var(--txm)}
+.theme-btn{
+  width:38px;height:38px;border-radius:var(--r2);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--txm);border:1px solid var(--bor);
+  transition:background var(--tr),color var(--tr);
+}
+.theme-btn:hover{background:var(--suroff);color:var(--tx)}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px 80px}
+.page-hd{margin-bottom:24px}
+.page-hd h1{font-size:clamp(20px,4vw,28px);font-weight:700;letter-spacing:-.03em;margin-bottom:4px}
+.page-hd p{font-size:14px;color:var(--txm)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+.card{background:var(--sur);border:1px solid var(--bor);border-radius:var(--r4);padding:18px;box-shadow:var(--sh1);margin-bottom:14px}
+.card:last-of-type{margin-bottom:0}
+.card-hd{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--txm);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.hr{border:none;border-top:1px solid var(--div);margin:12px 0}
+.fg{margin-bottom:12px}
+.fg:last-child{margin-bottom:0}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:360px){.row2{grid-template-columns:1fr}}
+label{display:block;font-size:11px;font-weight:600;color:var(--txm);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.iw{position:relative}
+.iu{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--txf);pointer-events:none;font-family:monospace}
+input[type=number]{
+  width:100%;padding:11px 46px 11px 11px;
+  background:var(--sur2);border:1px solid var(--bor);border-radius:var(--r2);
+  font-size:16px;color:var(--tx);
+  -webkit-appearance:none;-moz-appearance:textfield;appearance:none;
+  transition:border-color var(--tr),background var(--tr);
+}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]:focus{border-color:var(--pr);background:var(--sur);outline:none}
+input[type=number]:hover:not(:focus){border-color:rgba(128,128,128,.4)}
+.hint{font-size:11px;color:var(--txf);margin-top:4px}
+.btn-calc{
+  width:100%;padding:15px 20px;margin-top:6px;
+  background:var(--pr);color:#fff;
+  border-radius:var(--r3);font-size:16px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:background var(--tr),transform var(--tr);
+  -webkit-tap-highlight-color:transparent;min-height:52px;
+}
+.btn-calc:hover{background:var(--prh)}
+.btn-calc:active{background:var(--pra);transform:scale(.98)}
+.result-wrap{display:flex;flex-direction:column;gap:14px}
+.hero-r{background:var(--pr);border-radius:var(--r3);padding:22px 18px;text-align:center;color:#fff}
+.hero-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;opacity:.8;margin-bottom:8px}
+.hero-val{font-size:clamp(30px,7vw,50px);font-weight:700;font-family:monospace;letter-spacing:-.03em;line-height:1}
+.hero-sub{font-size:12px;opacity:.75;margin-top:8px}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--suroff);border-radius:var(--r3);padding:13px;border:1px solid var(--div)}
+.kpi-l{font-size:11px;color:var(--txm);font-weight:500;margin-bottom:4px}
+.kpi-v{font-size:19px;font-weight:700;font-family:monospace;letter-spacing:-.02em}
+.kpi-v.ok{color:var(--ok)}
+.tabs{display:flex;gap:3px;background:var(--suroff);border-radius:var(--r3);padding:3px;margin-bottom:12px}
+.tab{flex:1;padding:8px 10px;border-radius:calc(var(--r3) - 3px);font-size:12px;font-weight:600;color:var(--txm);text-align:center;transition:background var(--tr),color var(--tr);-webkit-tap-highlight-color:transparent}
+.tab.on{background:var(--sur);color:var(--tx);box-shadow:var(--sh1)}
+.tab:hover:not(.on){color:var(--tx)}
+.tp{display:none}.tp.on{display:block}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.bar-lbl{font-size:11px;color:var(--txm);min-width:88px;text-align:right}
+.bar-track{flex:1;height:10px;background:var(--suroff);border-radius:var(--rf);overflow:hidden}
+.bar-fill{height:100%;border-radius:var(--rf);transition:width .7s cubic-bezier(.16,1,.3,1);width:0}
+.bar-num{font-size:11px;font-family:monospace;font-weight:600;min-width:70px}
+.bk-item{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--div)}
+.bk-item:last-child{border-bottom:none}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.bk-name{flex:1;font-size:13px;color:var(--txm)}
+.bk-pct{width:55px;height:5px;background:var(--suroff);border-radius:var(--rf);overflow:hidden;flex-shrink:0}
+.bk-pct-f{height:100%;border-radius:var(--rf);transition:width .7s cubic-bezier(.16,1,.3,1);width:0}
+.bk-v{font-size:12px;font-family:monospace;font-weight:600;min-width:64px;text-align:right}
+.bk-m2{font-size:11px;color:var(--txf);font-family:monospace;min-width:62px;text-align:right}
+.alert{background:var(--wahl);border:1px solid rgba(150,66,25,.2);border-radius:var(--r2);padding:10px 13px;font-size:12px;color:var(--wa);line-height:1.5}
+.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:48px 20px;color:var(--txf);text-align:center;min-height:260px}
+.ph p{font-size:13px;max-width:26ch;line-height:1.5}
+#install-banner{
+  position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  left:16px;right:16px;display:none;
+  background:var(--pr);color:#fff;border-radius:var(--r4);
+  padding:14px 16px;align-items:center;gap:10px;
+  box-shadow:var(--sh3);z-index:999;
+  animation:slideUp .4s cubic-bezier(.16,1,.3,1);
+}
+@keyframes slideUp{from{transform:translateY(130%);opacity:0}to{transform:none;opacity:1}}
+#install-banner p{flex:1;font-size:13px;font-weight:600;line-height:1.4}
+#install-banner p span{display:block;font-weight:400;opacity:.8;font-size:12px;margin-top:2px}
+.btn-ins{background:#fff;color:var(--pr);border-radius:var(--rf);padding:7px 14px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.btn-ins-x{width:26px;height:26px;border-radius:var(--rf);background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round">
+        <polygon points="12,3 22,21 2,21"/>
+        <line x1="6" y1="16" x2="18" y2="16"/>
+        <line x1="8" y1="19.5" x2="16" y2="19.5"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-name">StoneCost</div>
+      <div class="logo-sub">Calculadora de Serraria</div>
+    </div>
+  </div>
+  <button class="theme-btn" id="themeBtn" aria-label="Alternar tema">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</header>
+
+<div class="wrap">
+  <div class="page-hd">
+    <h1>Custo por m² do Bloco</h1>
+    <p>Preencha os dados e clique em Calcular</p>
+  </div>
+  <div class="grid">
+    <div>
+      <div class="card">
+        <div class="card-hd">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+          Dimensões do Bloco
+        </div>
+        <div class="row2">
+          <div class="fg"><label for="comp">Comprimento</label><div class="iw"><input type="number" id="comp" value="2.90" step="0.01" min="0.01" inputmode="decimal"><span class="iu">m</span></div></div>
+          <div class="fg"><label for="alt">Altura</label><div class="iw"><input type="number" id="alt" value="1.50" step="0.01" min="0.01" inputmode="decimal"><span class="iu">m</span></div></div>
+        </div>
+        <div class="row2">
+          <div class="fg"><label for="larg">Largura</label><div class="iw"><input type="number" id="larg" value="1.80" step="0.01" min="0.01" inputmode="decimal"><span class="iu">m</span></div></div>
+          <div class="fg"><label for="esp">Esp. Chapa</label><div class="iw"><input type="number" id="esp" value="7.45" step="0.01" min="0.1" inputmode="decimal"><span class="iu">cm</span></div></div>
+        </div>
+        <p class="hint">Serragem ao longo da altura do bloco.</p>
+      </div>
+      <div class="card">
+        <div class="card-hd">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Aquisição
+        </div>
+        <div class="fg"><label for="bloco_usd">Valor do Bloco</label><div class="iw"><input type="number" id="bloco_usd" value="9396" step="1" min="0" inputmode="decimal"><span class="iu">USD</span></div></div>
+        <div class="fg"><label for="frete">Frete</label><div class="iw"><input type="number" id="frete" value="12684.60" step="0.01" min="0" inputmode="decimal"><span class="iu">R$</span></div></div>
+        <div class="fg"><label for="cambio">Câmbio USD→R$</label><div class="iw"><input type="number" id="cambio" value="4.9170" step="0.0001" min="0.01" inputmode="decimal"><span class="iu">R$</span></div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          Serragem
+        </div>
+        <div class="fg"><label for="fio_usd">Fio Diamantado</label><div class="iw"><input type="number" id="fio_usd" value="1.18" step="0.01" min="0" inputmode="decimal"><span class="iu">USD/m²</span></div></div>
+        <div class="row2">
+          <div class="fg"><label for="horas">Tempo Serra</label><div class="iw"><input type="number" id="horas" value="19" step="0.5" min="0.5" inputmode="decimal"><span class="iu">h</span></div></div>
+          <div class="fg"><label for="kwh_h">Consumo</label><div class="iw"><input type="number" id="kwh_h" value="160" step="1" min="0" inputmode="decimal"><span class="iu">kWh</span></div></div>
+        </div>
+        <div class="fg"><label for="tarifa">Tarifa Energia</label><div class="iw"><input type="number" id="tarifa" value="0.40" step="0.01" min="0" inputmode="decimal"><span class="iu">R$/kWh</span></div></div>
+        <hr class="hr">
+        <div class="row2">
+          <div class="fg"><label for="salarios">Salários/Mês</label><div class="iw"><input type="number" id="salarios" value="23258.60" step="0.01" min="0" inputmode="decimal"><span class="iu">R$</span></div></div>
+          <div class="fg"><label for="horas_mes">Horas/Mês</label><div class="iw"><input type="number" id="horas_mes" value="220" step="1" min="1" inputmode="decimal"><span class="iu">h</span></div></div>
+        </div>
+        <div class="fg"><label for="trat">Tratamento Chapas</label><div class="iw"><input type="number" id="trat" value="30" step="0.01" min="0" inputmode="decimal"><span class="iu">R$/m²</span></div></div>
+      </div>
+      <button class="btn-calc" onclick="calcular()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h.01M15 9h.01M9 15h6"/></svg>
+        Calcular Custo por m²
+      </button>
+    </div>
+    <div id="rp">
+      <div class="card" style="margin-bottom:0">
+        <div class="ph">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg>
+          <p>Preencha os dados e clique em <strong>Calcular</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="install-banner" role="banner">
+  <button class="btn-ins-x" onclick="closeBanner()" aria-label="Fechar">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <p>Instalar StoneCost<span>Use offline, como app nativo</span></p>
+  <button class="btn-ins" onclick="installApp()">Instalar</button>
+</div>
+
+<script>
+/* TEMA */
+(function(){
+  var r=document.documentElement;
+  var d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  r.setAttribute('data-theme',d);
+  var btn=document.getElementById('themeBtn');
+  function si(m){btn.innerHTML=m==='dark'?'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>':'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';}
+  si(d);
+  btn.addEventListener('click',function(){d=d==='dark'?'light':'dark';r.setAttribute('data-theme',d);si(d);});
+})();
+
+var COR=['#01696f','#bb653b','#437a22','#006494','#7a39bb','#d19900'];
+var NOM=['Bloco','Frete','Tratamento','Mão de Obra','Energia','Fio Diamantado'];
+
+function fmt(v){return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function g(id){return parseFloat(document.getElementById(id).value)||0;}
+
+function calcular(){
+  var comp=g('comp'),alt=g('alt'),larg=g('larg'),esp=g('esp')/100;
+  var cambio=g('cambio'),bUsd=g('bloco_usd'),frete=g('frete');
+  var fUsd=g('fio_usd'),hr=g('horas'),kw=g('kwh_h'),tar=g('tarifa');
+  var sal=g('salarios'),hm=g('horas_mes'),trat=g('trat');
+  if(!comp||!alt||!larg||!esp||!cambio){alert('Preencha todos os campos.');return;}
+  var nc=Math.floor(alt/esp);
+  var ac=comp*larg;
+  var at=nc*ac;
+  var v=[bUsd*cambio,frete,trat*at,(sal/hm)*hr,kw*hr*tar,fUsd*cambio*at];
+  var tot=v.reduce(function(a,b){return a+b;},0);
+  var m2=tot/at;
+  var mx=Math.max.apply(null,v);
+  var h='<div class="result-wrap">';
+  h+='<div class="hero-r"><div class="hero-label">Custo por Metro Quadrado</div>';
+  h+='<div class="hero-val" id="av">'+fmt(m2)+'</div>';
+  h+='<div class="hero-sub">'+nc+' chapas &times; '+ac.toFixed(2)+' m² = '+at.toFixed(2)+' m² totais</div></div>';
+  h+='<div class="kpi-grid">';
+  h+='<div class="kpi"><div class="kpi-l">Custo Total</div><div class="kpi-v">'+fmt(tot)+'</div></div>';
+  h+='<div class="kpi"><div class="kpi-l">Chapas</div><div class="kpi-v ok">'+nc+'</div></div>';
+  h+='<div class="kpi"><div class="kpi-l">Área Total</div><div class="kpi-v">'+at.toFixed(2)+' m²</div></div>';
+  h+='<div class="kpi"><div class="kpi-l">Área/Chapa</div><div class="kpi-v">'+ac.toFixed(2)+' m²</div></div>';
+  h+='</div>';
+  h+='<div><div class="tabs"><button class="tab on" onclick="sw(\'bars\',this)">Gráfico</button><button class="tab" onclick="sw(\'tbl\',this)">Detalhes</button></div>';
+  h+='<div class="tp on" id="tp-bars">';
+  v.forEach(function(x,i){
+    var w=(x/mx*100).toFixed(1);
+    var vm2=fmt(x/at).replace('R$ ','');
+    h+='<div class="bar-row"><div class="bar-lbl">'+NOM[i]+'</div>';
+    h+='<div class="bar-track"><div class="bar-fill" style="background:'+COR[i]+'" data-w="'+w+'"></div></div>';
+    h+='<div class="bar-num">R$'+vm2+'/m²</div></div>';
+  });
+  h+='</div><div class="tp" id="tp-tbl">';
+  v.forEach(function(x,i){
+    var p=(x/tot*100).toFixed(1);
+    h+='<div class="bk-item"><div class="dot" style="background:'+COR[i]+'"></div>';
+    h+='<div class="bk-name">'+NOM[i]+'</div>';
+    h+='<div class="bk-pct"><div class="bk-pct-f" style="background:'+COR[i]+'" data-w="'+p+'"></div></div>';
+    h+='<div class="bk-v">'+fmt(x)+'</div>';
+    h+='<div class="bk-m2">'+fmt(x/at)+'/m²</div></div>';
+  });
+  h+='</div></div>';
+  h+='<div class="alert">⚠️ Não inclui margem de lucro, depreciação de equipamentos nem custos indiretos.</div>';
+  h+='</div>';
+  document.getElementById('rp').innerHTML=h;
+  setTimeout(function(){
+    document.querySelectorAll('[data-w]').forEach(function(el){el.style.width=el.getAttribute('data-w')+'%';});
+  },80);
+  var el=document.getElementById('av');
+  var s=null;
+  function ani(ts){
+    if(!s)s=ts;
+    var p=Math.min((ts-s)/700,1);
+    var e=1-Math.pow(1-p,3);
+    el.textContent=fmt(m2*e);
+    if(p<1)requestAnimationFrame(ani);
+  }
+  requestAnimationFrame(ani);
+  if(window.innerWidth<=700){
+    setTimeout(function(){document.getElementById('rp').scrollIntoView({behavior:'smooth',block:'start'});},120);
+  }
+}
+
+function sw(w,btn){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  btn.classList.add('on');
+  document.querySelectorAll('.tp').forEach(function(p){p.classList.remove('on');});
+  var tp=document.getElementById('tp-'+w);
+  if(tp)tp.classList.add('on');
+}
+
+var dp=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e;document.getElementById('install-banner').style.display='flex';});
+function installApp(){if(!dp)return;dp.prompt();dp.userChoice.then(function(){dp=null;closeBanner();});}
+function closeBanner(){var b=document.getElementById('install-banner');if(b){b.style.transition='opacity .3s';b.style.opacity='0';setTimeout(function(){b.remove();},300);}}
+window.addEventListener('appinstalled',function(){closeBanner();});
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){});});
+}
+
+document.addEventListener('DOMContentLoaded',function(){calcular();});
+</script>
+</body>
+</html>
